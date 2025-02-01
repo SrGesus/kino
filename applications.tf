@@ -8,7 +8,7 @@ locals {
 resource "kubernetes_deployment" "applications" {
   for_each = var.applications
   metadata {
-    name      = "${each.key}"
+    name      = each.key
     namespace = var.namespace
     labels = {
       "app" = "${each.key}"
@@ -28,8 +28,8 @@ resource "kubernetes_deployment" "applications" {
         }
       }
       spec {
-      container {
-          name  = "${each.key}"
+        container {
+          name  = each.key
           image = "ghcr.io/linuxserver/${each.key}:latest"
           env {
             name  = "TZ"
@@ -93,28 +93,17 @@ resource "kubernetes_service" "applications" {
     namespace = var.namespace
   }
   spec {
-  type = "ClusterIP"
-  selector = {
-    "app" = each.key
-  }
-  port {
-    name        = "web"
-    port        = 80
-    target_port = "web"
-  }
+    type = "ClusterIP"
+    selector = {
+      "app" = each.key
+    }
+    port {
+      name        = "web"
+      port        = 80
+      target_port = "web"
+    }
   }
   depends_on = [
     kubernetes_deployment.applications
   ]
-}
-
-# Wait for config file to be created
-resource "time_sleep" "config_delay" {
-  depends_on = [ kubernetes_deployment.applications ]
-  create_duration = "10s"
-}
-data "local_file" "config" {
-  for_each = var.applications
-  filename = "${local.data_folder[each.key]}/config.xml"
-  depends_on = [ time_sleep.config_delay ]
 }

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Homeserver!</title>
+    <script src="/assets/tailwind.min.js"></script>
+    <link href="/assets/daisyui.min.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" type="image/png" href="/assets/favicon.png" />
+  </head>
+  <body
+    onload="loadGrid()"
+    class="h-screen flex flex-col bg-[url(/assets/background.jpg)] bg-no-repeat bg-center bg-cover"
+    data-theme="luxury"
+  >
+    <div class="navbar bg-base-200 shadow-lg h-16 opacity-90">
+      <div class="navbar-start"></div>
+      <div class="navbar-center">
+        <button onclick="goHome()" class="btn btn-ghost font-bold text-3xl">
+          Homeserver
+        </button>
+      </div>
+      <div class="navbar-end"></div>
+    </div>
+    <iframe id="iframe" class="hidden h-full w-full"></iframe>
+    <div
+      id="landing-page"
+      class="h-full w-full p-4 overflow-scroll flex bg-[oklch(var(--b1-70))]"
+    >
+      <div
+        id="landing-grid"
+        class="grid grid-cols-1 md:grid-cols-2 w-5/6 gap-8 m-auto"
+      >
+        <div class="card skeleton h-32"></div>
+        <div class="card skeleton h-32"></div>
+        <div class="card skeleton h-32"></div>
+        <div class="card skeleton h-32"></div>
+        <div class="card skeleton h-32"></div>
+        <div class="card skeleton h-32"></div>
+      </div>
+    </div>
+  </body>
+</html>
+<script>
+  const loadApp = (app) => {
+    document.getElementById("landing-page").classList.add("hidden");
+    let iframe = document.getElementById("iframe");
+    iframe.classList.remove("hidden");
+    iframe.src = "/" + app;
+  };
+  const goHome = () => {
+    document.getElementById("landing-page").classList.remove("hidden");
+    let iframe = document.getElementById("iframe");
+    iframe.classList.add("hidden");
+    iframe.src = "";
+  };
+
+  const apps = [
+    {
+      name: "jellyfin",
+      description: "Para ver filmes, séries, e mais!",
+    },
+    {
+      name: "radarr",
+      description: "Para encontrar filmes.",
+    },
+    {
+      name: "sonarr",
+      description: "Para encontrar séries!",
+    },
+  ];
+
+  const loadGrid = async () => {
+    const createAppButton = (app) => `
+    <button
+      onclick="loadApp('${app.name}')"
+      class="indicator card bg-primary text-primary-content w-full shadow-lg hover:scale-105"
+    >
+      <span
+        id="${app.name}"
+        class="indicator-item indicator-center indicator-bottom badge badge-warning"
+        >Connecting...</span
+      >
+      <div class="card-body w-full items-center">
+        <h2 class="card-title capitalize">${app.name}</h2>
+        <p>${app.description}</p>
+      </div>
+    </button>`;
+
+    document.getElementById("landing-grid").innerHTML = apps.reduce(
+      (acc, cur) => acc + createAppButton(cur),
+      ""
+    );
+
+    for (app of apps) {
+      let indicator = document.getElementById(app.name);
+
+
+      fetch(`/${app.name}`, { credentials: "omit" }).then(res => {
+        if (!res.ok && res.status != 401) {
+          indicator.classList.remove("badge-warning");
+          indicator.classList.add("badge-error");
+          indicator.textContent = "Failed";
+        } else {
+          indicator.classList.remove("badge-warning");
+          indicator.classList.add("badge-success");
+          indicator.textContent = "Connected";
+        }
+      }).catch(() => {
+        indicator.classList.remove("badge-warning");
+        indicator.classList.add("badge-error");
+        indicator.textContent = "Failed";
+      })
+    }
+  };
+</script>
+<style>
+  [data-theme="luxury"] {
+    --b1-70: var(--b1) / 70%;
+  }
+</style>

@@ -25,7 +25,7 @@ resource "kubernetes_deployment" "prowlarr" {
         }
       }
       spec {
-      container {
+        container {
           name  = "prowlarr"
           image = "ghcr.io/linuxserver/prowlarr:latest"
           env {
@@ -67,15 +67,15 @@ resource "kubernetes_service" "prowlarr" {
     namespace = var.namespace
   }
   spec {
-  type = "ClusterIP"
-  selector = {
-    "app" = "prowlarr"
-  }
-  port {
-    name        = "web"
-    port        = 80
-    target_port = "web"
-  }
+    type = "ClusterIP"
+    selector = {
+      "app" = "prowlarr"
+    }
+    port {
+      name        = "web"
+      port        = 80
+      target_port = "web"
+    }
   }
   depends_on = [
     kubernetes_deployment.prowlarr

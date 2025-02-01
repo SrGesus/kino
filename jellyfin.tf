@@ -88,7 +88,7 @@ resource "kubernetes_service" "jellyfin_web" {
     port {
       name        = "web"
       port        = 80
-      target_port = 8096
+      target_port = "web"
     }
   }
   depends_on = [

@@ -1,13 +1,13 @@
 variable "namespace" {
   description = "The name of the namespace for the services."
   type        = string
-  default = "kino"
+  default     = "kino"
 }
 
 variable "kubeconfig" {
   description = "The path to the kubernetes configuration"
-  type    = string
-  default = "~/.kube/config"
+  type        = string
+  default     = "~/.kube/config"
 }
 
 variable "downloads" {
@@ -18,7 +18,7 @@ variable "downloads" {
 variable "applications" {
   description = "The applications to be deployed, e.g. radarr, sonarr; the path to their library, and their port."
   type = map(object({
-    # Absolute path to where the final media content is to be stored. 
+    # Path to where the final media content is to be stored. 
     library = string
     # Port where the application serves by default.
     port = number
