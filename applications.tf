@@ -13,9 +13,6 @@ resource "kubernetes_deployment" "applications" {
     labels = {
       "app" = each.key
     }
-    annotations = {
-      "time" = timestamp()
-    }
   }
   spec {
 

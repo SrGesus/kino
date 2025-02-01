@@ -23,6 +23,26 @@ sudo terraform apply -auto-approve
 ```
 
 ## Variables
+Currently the setup is a bit inflexible but that will be improved.
 
-### namespace
-This is the kubernetes name space to where 
+The content is stored in local folders.
+```conf
+# Path to your kube config
+kubeconfig = "~/.kube/config"
+
+# The path where Downloaded content is to be stored.
+downloads = "~/Downloads"
+
+applications = {
+  radarr = {
+    # Path to where the final media content is to be stored. 
+    library = "~/Downloads/Movies/Movies"
+  }
+  sonarr = {
+    library = "~/Downloads/Movies/Shows"
+  }
+  prowlarr = {
+    library = "~/Downloads/"
+  }
+}
+```
