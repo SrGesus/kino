@@ -1,15 +1,12 @@
-
-resource "null_resource" "start" {
+# Wait for config file to be created
+resource "time_sleep" "config_delay" {
   triggers = {
     always_run = timestamp()
   }
-}
-
-# Wait for config file to be created
-resource "time_sleep" "config_delay" {
-  depends_on      = [kubernetes_deployment.applications, null_resource.start]
+  depends_on      = [kubernetes_deployment.applications]
   create_duration = "10s"
 }
+
 data "local_file" "applications_config" {
   for_each   = var.applications
   filename   = "${local.data_folder[each.key]}/config.xml"
@@ -21,7 +18,7 @@ resource "local_file" "applications_nginx_confs" {
   filename = "${local.nginx_config}/routes/${each.key}.conf"
   content  = <<EOT
     location /${each.key} {
-      proxy_pass http://${each.key}-web.kino;
+      proxy_pass http://${each.key}-web.${var.namespace};
       proxy_set_header Host $host;
       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_set_header X-Forwarded-Host $host;

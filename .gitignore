@@ -1,4 +1,7 @@
-.terraform*
-terraform*
+data
 *.json
 background.jpg
+
+# Terraform files
+.terraform*
+terraform*

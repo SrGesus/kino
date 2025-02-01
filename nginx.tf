@@ -1,5 +1,5 @@
 locals {
-  nginx_config = "${abspath(path.module)}/data/nginx"
+  nginx_config = "${abspath(path.module)}/nginx"
   nginx_html = "${abspath(path.module)}/html"
 }
 

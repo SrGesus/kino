@@ -13,8 +13,12 @@ resource "kubernetes_deployment" "applications" {
     labels = {
       "app" = each.key
     }
+    annotations = {
+      "time" = timestamp()
+    }
   }
   spec {
+
     replicas = 1
     selector {
       match_labels = {
@@ -28,6 +32,16 @@ resource "kubernetes_deployment" "applications" {
         }
       }
       spec {
+        init_container {
+          name  = "${each.key}-init"
+          image = "debian:bookworm-slim"
+          volume_mount {
+            name       = "data"
+            mount_path = "/config"
+          }
+          command = ["/bin/bash", "-c"]
+          args    = ["ls /config/config.xml || echo '<Config><UrlBase>${each.key}</UrlBase><Port>80</Port></Config>' > /config/config.xml"]
+        }
         container {
           name  = each.key
           image = "ghcr.io/linuxserver/${each.key}"
@@ -45,7 +59,7 @@ resource "kubernetes_deployment" "applications" {
           }
           port {
             name           = "web"
-            container_port = each.value.port
+            container_port = 80
           }
           volume_mount {
             name       = "data"
