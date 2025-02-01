@@ -1,4 +1,4 @@
-## Deploy Sonarr to Kubernetes
+## Deploy Starr applications (sonarr, radarr, lidarr, prowlarr) to Kubernetes
 locals {
   data_folder = {
     for key, value in var.applications : key => "${abspath(path.module)}/data/${key}"
@@ -11,26 +11,26 @@ resource "kubernetes_deployment" "applications" {
     name      = each.key
     namespace = var.namespace
     labels = {
-      "app" = "${each.key}"
+      "app" = each.key
     }
   }
   spec {
     replicas = 1
     selector {
       match_labels = {
-        "app" = "${each.key}"
+        "app" = each.key
       }
     }
     template {
       metadata {
         labels = {
-          "app" = "${each.key}"
+          "app" = each.key
         }
       }
       spec {
         container {
           name  = each.key
-          image = "ghcr.io/linuxserver/${each.key}:latest"
+          image = "ghcr.io/linuxserver/${each.key}"
           env {
             name  = "TZ"
             value = "Europe/Lisbon"
@@ -89,7 +89,7 @@ resource "kubernetes_deployment" "applications" {
 resource "kubernetes_service" "applications" {
   for_each = var.applications
   metadata {
-    name      = each.key
+    name      = "${each.key}-web"
     namespace = var.namespace
   }
   spec {

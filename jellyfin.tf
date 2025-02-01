@@ -77,7 +77,7 @@ resource "kubernetes_deployment" "jellyfin" {
 # Jellyfin routing
 resource "kubernetes_service" "jellyfin_web" {
   metadata {
-    name      = "jellyfin"
+    name      = "jellyfin-web"
     namespace = var.namespace
   }
   spec {

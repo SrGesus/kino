@@ -11,4 +11,16 @@ applications = {
     # Port where the application serves by default.
     port = 7878
   }
+  sonarr = {
+    library = "~/Downloads/Movies/Shows"
+    port    = 8989
+  }
+  lidarr = {
+    library = "~/Downloads/Music"
+    port    = 8686
+  }
+  prowlarr = {
+    library = "~/Downloads/"
+    port = 9696
+  }
 }

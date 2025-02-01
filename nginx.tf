@@ -1,5 +1,5 @@
 locals {
-  nginx_config = "${abspath(path.module)}/data/nginx.conf"
+  nginx_config = "${abspath(path.module)}/data/nginx"
   nginx_html = "${abspath(path.module)}/html"
 }
 
@@ -48,7 +48,7 @@ resource "kubernetes_deployment" "nginx" {
           }
           volume_mount {
             name       = "config"
-            mount_path = "/etc/nginx/nginx.conf"
+            mount_path = "/etc/nginx/conf.d"
             read_only = true
           }
           volume_mount {
@@ -61,14 +61,14 @@ resource "kubernetes_deployment" "nginx" {
           name = "config"
           host_path {
             path = local.nginx_config
-            type = "File"
+            type = "DirectoryOrCreate"
           }
         }
         volume {
           name = "html"
           host_path {
             path = local.nginx_html
-            type = "Directory"
+            type = "DirectoryOrCreate"
           }
         }
       }

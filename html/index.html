@@ -68,50 +68,72 @@
       name: "sonarr",
       description: "Para encontrar séries!",
     },
+    {
+      name: "prowlarr",
+      description: "Gere os indexeres das aplicações servarr.",
+    },
   ];
 
   const loadGrid = async () => {
-    const createAppButton = (app) => `
-    <button
-      onclick="loadApp('${app.name}')"
-      class="indicator card bg-primary text-primary-content w-full shadow-lg hover:scale-105"
-    >
-      <span
-        id="${app.name}"
-        class="indicator-item indicator-center indicator-bottom badge badge-warning"
-        >Connecting...</span
-      >
-      <div class="card-body w-full items-center">
-        <h2 class="card-title capitalize">${app.name}</h2>
-        <p>${app.description}</p>
-      </div>
-    </button>`;
+    fetch("/assets/applist.json", { cache: "reload" }).then(async (resl) => {
+      const apps = await resl.json();
+      fetch("/assets/appdescr.json", { cache: "reload" }).then(async (resd) => {
+        const descriptions = await resd.json();
 
-    document.getElementById("landing-grid").innerHTML = apps.reduce(
-      (acc, cur) => acc + createAppButton(cur),
-      ""
-    );
+        const createAppButton = (app) => `
+          <button
+            onclick="loadApp('${app}')"
+            class="indicator card bg-primary text-primary-content w-full shadow-lg hover:scale-105"
+          >
+            <span
+              id="${app}"
+              class="indicator-item indicator-center indicator-bottom badge badge-warning"
+              >A Conectar...</span
+            >
+            <div class="card-body w-full items-center">
+              <h2 class="card-title capitalize">
+                <div class="size-8"></div>
+                ${app}
+                <a
+                  href="/${app}"
+                  title="Replace this window"
+                  class="btn btn-square btn-sm btn-primary btn-ghost hover:scale-105"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
+                  </svg>
+                </a>
+              </h2>
+              <p>${descriptions[app] ?? ""}</p>
+            </div>
+          </button>
+        `;
 
-    for (app of apps) {
-      let indicator = document.getElementById(app.name);
+        document.getElementById("landing-grid").innerHTML = apps.reduce(
+          (acc, cur) => acc + createAppButton(cur),
+          ""
+        );
 
-
-      fetch(`/${app.name}`, { credentials: "omit" }).then(res => {
-        if (!res.ok && res.status != 401) {
-          indicator.classList.remove("badge-warning");
-          indicator.classList.add("badge-error");
-          indicator.textContent = "Failed";
-        } else {
-          indicator.classList.remove("badge-warning");
-          indicator.classList.add("badge-success");
-          indicator.textContent = "Connected";
+        for (app of apps) {
+          let indicator = document.getElementById(app);
+          fetch(`/${app}`, { credentials: "omit" })
+            .then((res) => {
+              if (!res.ok && res.status != 401) {
+                throw new Error(`Response status: ${response.status}`);
+              } else {
+                indicator.classList.remove("badge-warning");
+                indicator.classList.add("badge-success");
+                indicator.textContent = "Conectado";
+              }
+            })
+            .catch(() => {
+              indicator.classList.remove("badge-warning");
+              indicator.classList.add("badge-error");
+              indicator.textContent = "Erro";
+            });
         }
-      }).catch(() => {
-        indicator.classList.remove("badge-warning");
-        indicator.classList.add("badge-error");
-        indicator.textContent = "Failed";
-      })
-    }
+      });
+    });
   };
 </script>
 <style>

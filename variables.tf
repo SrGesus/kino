@@ -23,4 +23,18 @@ variable "applications" {
     # Port where the application serves by default.
     port = number
   }))
+  default = {
+    radarr = {
+      library = "/home/user/Downloads/Movies/Movies"
+      port = 7878
+    }
+    sonarr = {
+      library = "/home/user/Downloads/Movies/Shows"
+      port = 8989
+    }
+    lidarr = {
+      library = "/home/user/Downloads/Music"
+      port = 8686
+    }
+  }
 }
