@@ -15,7 +15,7 @@ data "local_file" "applications_config" {
 
 resource "local_file" "applications_nginx_confs" {
   for_each = merge(var.applications)
-  filename = "${local.nginx_config}/routes/${each.key}.conf"
+  filename = "${var.nginxconfigs}/routes/${each.key}.conf"
   content  = <<EOT
     location /${each.key} {
       proxy_pass http://${each.key}-web.${var.namespace};

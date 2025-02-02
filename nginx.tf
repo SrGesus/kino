@@ -1,5 +1,4 @@
 locals {
-  nginx_config = "${abspath(path.module)}/nginx"
   nginx_html = "${abspath(path.module)}/html"
 }
 
@@ -60,7 +59,7 @@ resource "kubernetes_deployment" "nginx" {
         volume {
           name = "config"
           host_path {
-            path = local.nginx_config
+            path = var.nginxconfigs
             type = "DirectoryOrCreate"
           }
         }
