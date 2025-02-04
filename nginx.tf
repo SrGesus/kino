@@ -48,12 +48,12 @@ resource "kubernetes_deployment" "nginx" {
           volume_mount {
             name       = "config"
             mount_path = "/etc/nginx/conf.d"
-            read_only = true
+            read_only  = true
           }
           volume_mount {
             name       = "html"
             mount_path = "/usr/share/nginx/html"
-            read_only = true
+            read_only  = true
           }
         }
         volume {

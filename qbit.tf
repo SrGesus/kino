@@ -20,8 +20,8 @@ resource "kubernetes_deployment" "qbittorrent" {
         }
       }
       spec {
-      container {
-          name  = "qbittorrent"
+        container {
+          name = "qbittorrent"
           # image = "ghcr.io/linuxserver/qbittorrent:amd64-4.6.0-r0-ls293"
           image = "ghcr.io/linuxserver/qbittorrent:4.6.0"
           env {
@@ -37,11 +37,11 @@ resource "kubernetes_deployment" "qbittorrent" {
             value = "1000"
           }
           env {
-            name = "WEBUI_PORT"
+            name  = "WEBUI_PORT"
             value = "80"
           }
           env {
-            name = "TORRENTING_PORT"
+            name  = "TORRENTING_PORT"
             value = "6881"
           }
           port {
@@ -50,11 +50,11 @@ resource "kubernetes_deployment" "qbittorrent" {
           }
           port {
             container_port = 6881
-            protocol = "UDP"
+            protocol       = "UDP"
           }
           port {
             container_port = 6881
-            protocol = "TCP"
+            protocol       = "TCP"
           }
           volume_mount {
             name       = "downloads"
@@ -81,12 +81,12 @@ resource "kubernetes_service" "qbittorrent_web" {
   spec {
     type = "ClusterIP"
     selector = {
-        "app" = "qbittorrent"
+      "app" = "qbittorrent"
     }
     port {
-        name        = "web"
-        port        = 80
-        target_port = "web"
+      name        = "web"
+      port        = 80
+      target_port = "web"
     }
   }
   depends_on = [
@@ -102,19 +102,19 @@ resource "kubernetes_service" "qbittorrent_torrenting" {
   spec {
     type = "NodePort"
     selector = {
-        "app" = "qbittorrent"
+      "app" = "qbittorrent"
     }
     port {
-        name        = "tcp"
-        port        = 6881
-        target_port = 6881
-        protocol    = "TCP"
+      name        = "tcp"
+      port        = 6881
+      target_port = 6881
+      protocol    = "TCP"
     }
     port {
-        name        = "udp"
-        port        = 6881
-        target_port = 6881
-        protocol    = "UDP"
+      name        = "udp"
+      port        = 6881
+      target_port = 6881
+      protocol    = "UDP"
     }
   }
   depends_on = [

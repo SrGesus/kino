@@ -12,7 +12,7 @@ variable "kubeconfig" {
 
 variable "nginxconfigs" {
   description = "The path to nginx config folder."
-  default = "${abspath(path.module)}/nginx"
+  default     = "${abspath(path.module)}/nginx"
 }
 
 variable "downloads" {
