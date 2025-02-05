@@ -3,11 +3,14 @@ terraform {
     kubernetes = {
       source = "hashicorp/kubernetes"
     }
-    local = {
-      source = "hashicorp/local"
+    prowlarr = {
+      source = "devopsarr/prowlarr"
     }
-    random = {
-      source = "hashicorp/random"
+    radarr = {
+      source = "devopsarr/radarr"
+    }
+    sonarr = {
+      source = "devopsarr/sonarr"
     }
   }
 }
@@ -20,4 +23,35 @@ resource "kubernetes_namespace" "kino" {
   metadata {
     name = var.namespace
   }
+}
+
+module "deployment" {
+  source    = "./deployment"
+  namespace = "kino"
+  downloads = var.downloads
+  providers = {
+    kubernetes = kubernetes
+  }
+  applications = {
+    prowlarr = {
+      library = "~/Downloads/Movies"
+    }
+    radarr = {
+      # Path to where the final media content is to be stored. 
+      library = "~/Downloads/Movies/Movies"
+    }
+    sonarr = {
+      library = "~/Downloads/Movies/Shows"
+    }
+    lidarr = {
+      library = "~/Downloads/Music"
+    }
+  }
+}
+
+resource "null_resource" "deployment" {
+  depends_on = [
+    kubernetes_namespace.kino,
+    module.deployment
+  ]
 }

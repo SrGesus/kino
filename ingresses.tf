@@ -1,4 +1,4 @@
-# # Ingress Templates
+# Ingress Templates
 
 resource "kubernetes_ingress_v1" "app_ingress" {
   metadata {

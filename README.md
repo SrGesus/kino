@@ -19,7 +19,8 @@ firewall-cmd --reload
 Now you can deploy to the cluster.
 ```bash
 terraform init
-sudo terraform apply -auto-approve
+terraform apply -auto-approve -target=null_resource.deployment
+terraform apply -auto-approve
 ```
 
 ## Variables

@@ -45,7 +45,7 @@ resource "kubernetes_deployment" "jellyfin" {
             mount_path = "/config"
           }
           dynamic "volume_mount" {
-            for_each = var.applications
+            for_each = { for k, v in var.applications: k => v if k != "prowlarr" }
             content {
               name       = volume_mount.key
               mount_path = "/data/${volume_mount.key}"

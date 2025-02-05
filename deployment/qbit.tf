@@ -60,11 +60,22 @@ resource "kubernetes_deployment" "qbittorrent" {
             name       = "downloads"
             mount_path = "/downloads"
           }
+          volume_mount {
+            name       = "data"
+            mount_path = "/config"
+          }
         }
         volume {
           name = "downloads"
           host_path {
             path = pathexpand(var.downloads)
+            type = "DirectoryOrCreate"
+          }
+        }
+        volume {
+          name = "data"
+          host_path {
+            path = "${abspath(path.module)}/data/qbit"
             type = "DirectoryOrCreate"
           }
         }

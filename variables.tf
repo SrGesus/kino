@@ -10,31 +10,17 @@ variable "kubeconfig" {
   default     = "~/.kube/config"
 }
 
-variable "nginxconfigs" {
-  description = "The path to nginx config folder."
-  default     = "${abspath(path.module)}/nginx"
-}
-
 variable "downloads" {
   description = "The absolute path where Downloaded content is to be stored."
   type        = string
 }
 
-variable "applications" {
-  description = "The applications to be deployed, e.g. radarr, sonarr; the path to their library, and their port."
-  type = map(object({
-    # Path to where the final media content is to be stored. 
-    library = string
-  }))
-  default = {
-    radarr = {
-      library = "/home/user/Downloads/Movies/Movies"
-    }
-    sonarr = {
-      library = "/home/user/Downloads/Movies/Shows"
-    }
-    lidarr = {
-      library = "/home/user/Downloads/Music"
-    }
-  }
+variable "username" {
+  description = "Servarr applications username."
+  default = "abc"
+}
+
+variable "password" {
+  description = "Servarr applications password."
+  default = "1"
 }
