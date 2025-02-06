@@ -9,6 +9,11 @@ resource "local_file" "applications_nginx_confs" {
   content  = <<-EOT
     %{if each.value.stripprefix == true}location /${each.key} {
       proxy_pass http://${each.key}-web.${module.deployment.namespace};
+      sub_filter
+      '</head>'
+      '<link rel="stylesheet" type="text/css" href="/assets/servarr.css"></head>';
+      sub_filter_once on;
+      proxy_set_header Accept-Encoding "";
     %{else}location /${each.key}/ {
       proxy_pass http://${each.key}-web.${module.deployment.namespace}/;
       proxy_request_buffering off;

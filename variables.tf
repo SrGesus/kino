@@ -17,12 +17,10 @@ variable "downloads" {
 
 variable "username" {
   description = "Servarr applications username."
-  default = "abc"
 }
 
 variable "password" {
   description = "Servarr applications password."
-  default = "1"
 }
 
 variable "qbittorrent_password" {

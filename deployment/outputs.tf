@@ -1,8 +1,5 @@
 # Wait for config file to be created
 resource "time_sleep" "config_delay" {
-  # triggers = {
-  #   always_run = timestamp()
-  # }
   depends_on      = [kubernetes_deployment.applications]
   create_duration = "10s"
 }

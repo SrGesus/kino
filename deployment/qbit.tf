@@ -10,7 +10,7 @@ data "local_file" "add_password_sh" {
 
 resource "null_resource" "reset_password" {
   triggers = {
-    always_run = var.qbittorrent_password
+    password_change = var.qbittorrent_password
   }
 }
 
