@@ -24,3 +24,7 @@ variable "password" {
   description = "Servarr applications password."
   default = "1"
 }
+
+variable "qbittorrent_password" {
+  type = string
+}

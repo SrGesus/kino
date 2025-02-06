@@ -1,4 +1,23 @@
+
+
+data "external" "get_hash" {
+  program = ["python3", "${abspath(path.module)}/qbit_hash.py", var.qbittorrent_password]
+}
+
+data "local_file" "add_password_sh" {
+  filename = "${abspath(path.module)}/qbit_hash_insert.sh"
+}
+
+resource "null_resource" "reset_password" {
+  triggers = {
+    always_run = var.qbittorrent_password
+  }
+}
+
 resource "kubernetes_deployment" "qbittorrent" {
+  lifecycle {
+    replace_triggered_by = [ null_resource.reset_password ]
+  }
   metadata {
     name      = "qbittorrent"
     namespace = var.namespace
@@ -20,10 +39,21 @@ resource "kubernetes_deployment" "qbittorrent" {
         }
       }
       spec {
+        init_container {
+          name  = "qbittorrent-init"
+          image = "debian:bookworm-slim"
+          volume_mount {
+            name       = "data"
+            mount_path = "/config"
+          }
+          command = ["/bin/bash", "-c"]
+          args = [
+            replace(data.local_file.add_password_sh.content, "$1", data.external.get_hash.result.hash)
+          ]
+        }
         container {
           name = "qbittorrent"
-          # image = "ghcr.io/linuxserver/qbittorrent:amd64-4.6.0-r0-ls293"
-          image = "ghcr.io/linuxserver/qbittorrent:4.6.0"
+          image = "ghcr.io/linuxserver/qbittorrent"
           env {
             name  = "TZ"
             value = "Europe/Lisbon"

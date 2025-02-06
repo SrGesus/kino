@@ -15,6 +15,10 @@ variable "downloads" {
   type        = string
 }
 
+variable "qbittorrent_password" {
+  type = string
+}
+
 variable "applications" {
   description = "The applications to be deployed, e.g. radarr, sonarr; the path to their library, and their port."
   type = map(object({

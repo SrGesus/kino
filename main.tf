@@ -29,6 +29,7 @@ module "deployment" {
   source    = "./deployment"
   namespace = "kino"
   downloads = var.downloads
+  qbittorrent_password = var.qbittorrent_password
   providers = {
     kubernetes = kubernetes
   }
