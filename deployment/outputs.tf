@@ -15,7 +15,7 @@ output "api_keys" {
   value = {
     for key, value in data.local_file.applications_config : key => regex("<ApiKey>(.*)</ApiKey>", value.content).0
   }
-  sensitive = false
+  sensitive = true
 }
 
 output "namespace" {
@@ -37,4 +37,5 @@ output "routes" {
       "stripprefix" = false
     }
   })
+  sensitive = true
 }

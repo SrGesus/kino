@@ -17,12 +17,15 @@ variable "downloads" {
 
 variable "username" {
   description = "Servarr applications username."
+  sensitive = true
 }
 
 variable "password" {
   description = "Servarr applications password."
+  sensitive = true
 }
 
 variable "qbittorrent_password" {
   type = string
+  sensitive = true
 }
