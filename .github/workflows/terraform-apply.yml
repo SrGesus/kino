@@ -1,0 +1,20 @@
+name: Terraform Apply
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    name: Terraform Apply
+    runs-on: self-host
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Apply
+        run: |
+          terraform init
+          terraform apply -target=null_resource.deployment
+          terraform apply
