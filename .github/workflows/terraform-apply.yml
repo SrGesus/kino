@@ -22,5 +22,5 @@ jobs:
       - name: Apply
         run: |
           terraform init
-          terraform apply -target=null_resource.deployment
-          terraform apply
+          terraform apply -target=null_resource.deployment -auto-approve
+          terraform apply -auto-approve
