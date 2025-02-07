@@ -7,7 +7,7 @@ on:
 
 env:
   TF_VAR_kubeconfig: ~/.kube/config.yaml
-  TF_VAR_downloads: ~/Downloads
+  TF_VAR_downloads: ~/Downloads/kino
   TF_VAR_qbittorrent_password: ${{ secrets.Q_PASSWORD }}
   TF_VAR_username: ${{ secrets.USERNAME }}
   TF_VAR_password: ${{ secrets.PASSWORD }}

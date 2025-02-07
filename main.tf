@@ -38,17 +38,17 @@ module "deployment" {
   }
   applications = {
     prowlarr = {
-      library = "~/Downloads/Movies"
+      library = var.downloads
     }
     radarr = {
       # Path to where the final media content is to be stored. 
-      library = "~/Downloads/Movies/Movies"
+      library = "~/Videos/Movies"
     }
     sonarr = {
-      library = "~/Downloads/Movies/Shows"
+      library = "~/Videos/Shows"
     }
     lidarr = {
-      library = "~/Downloads/Music"
+      library = "~/Music"
     }
   }
 }
