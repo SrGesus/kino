@@ -17,6 +17,7 @@ resource "sonarr_download_client_qbittorrent" "client" {
   username    = "admin"
   password    = var.qbittorrent_password
   tv_category = "sonarr"
+  remove_completed_downloads = true
 }
 
 resource "sonarr_host" "sonarr" {

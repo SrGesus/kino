@@ -1,14 +1,19 @@
-provider "radarr" {
-  url     = "http://${module.deployment.routes.radarr.clusterip}/radarr"
-  api_key = module.deployment.api_keys.radarr
+provider "lidarr" {
+  url     = "http://${module.deployment.routes.lidarr.clusterip}/lidarr"
+  api_key = module.deployment.api_keys.lidarr
 }
 
-resource "radarr_root_folder" "tv" {
-  depends_on = [kubernetes_deployment.nginx]
-  path       = "/library"
+resource "lidarr_root_folder" "music" {
+  name                    = "Music"
+  quality_profile_id      = 1
+  metadata_profile_id     = 1
+  monitor_option          = "future"
+  new_item_monitor_option = "all"
+  path                    = "/library"
+  tags                    = []
 }
 
-resource "radarr_download_client_qbittorrent" "client" {
+resource "lidarr_download_client_qbittorrent" "client" {
   depends_on     = [kubernetes_deployment.nginx]
   enable         = true
   name           = "qBittorrent"
@@ -16,17 +21,17 @@ resource "radarr_download_client_qbittorrent" "client" {
   port           = 80
   username       = "admin"
   password       = var.qbittorrent_password
-  movie_category = "radarr"
+  music_category = "lidarr"
   remove_completed_downloads = true
 }
 
-resource "radarr_host" "radarr" {
+resource "lidarr_host" "lidarr" {
   depends_on      = [kubernetes_deployment.nginx]
   launch_browser  = true
   bind_address    = "*"
   port            = 80
-  url_base        = "/radarr"
-  instance_name   = "Radarr"
+  url_base        = "/lidarr"
+  instance_name   = "Lidarr"
   application_url = ""
 
   authentication = {
@@ -58,11 +63,11 @@ resource "radarr_host" "radarr" {
   }
 }
 
-# # Restart Radarr when settings change because the provider doesn't seem to do it automatically
-# resource "null_resource" "radarr_restart" {
+# # Restart Lidarr when settings change because the provider doesn't seem to do it automatically
+# resource "null_resource" "lidarr_restart" {
 #   provisioner "local-exec" {
-#     command = "curl -X POST ${module.k8s.service_ip["radarr"]}/api/v3/system/restart?apikey=${module.k8s.api_key["radarr"]}"
+#     command = "curl -X POST ${module.k8s.service_ip["lidarr"]}/api/v3/system/restart?apikey=${module.k8s.api_key["lidarr"]}"
 #   }
-#   depends_on = [ radarr_host.radarr ]
+#   depends_on = [ lidarr_host.lidarr ]
 # }
 

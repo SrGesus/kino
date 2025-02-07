@@ -9,34 +9,37 @@
     <link rel="icon" type="image/png" href="/assets/favicon.png" />
   </head>
   <body
-    onload="loadGrid()"
+    onload="loadGrid(); goHome(true);"
     class="h-screen flex flex-col bg-[url(/assets/background.jpg)] bg-no-repeat bg-center bg-cover"
     data-theme="luxury"
   >
     <div class="navbar bg-base-200 shadow-lg h-16 opacity-90">
       <div class="navbar-start"></div>
       <div class="navbar-center">
-        <button onclick="goHome()" class="btn btn-ghost font-bold text-3xl">
+        <button onclick="goHome(true)" class="btn btn-ghost font-bold text-3xl">
           Homeserver
         </button>
       </div>
       <div class="navbar-end"></div>
     </div>
-    <iframe id="iframe" class="hidden h-full w-full bg-[oklch(var(--b1-70))]"></iframe>
-    <div
-      id="landing-page"
-      class="h-full w-full p-4 overflow-scroll flex bg-[oklch(var(--b1-70))]"
-    >
-      <div
-        id="landing-grid"
-        class="grid grid-cols-1 md:grid-cols-2 w-5/6 gap-8 m-auto"
-      >
-        <div class="card skeleton h-32"></div>
-        <div class="card skeleton h-32"></div>
-        <div class="card skeleton h-32"></div>
-        <div class="card skeleton h-32"></div>
-        <div class="card skeleton h-32"></div>
-        <div class="card skeleton h-32"></div>
+    <div class="bg-[oklch(var(--b1-70))] h-full w-full flex">
+      <iframe
+        onload="console.log(`src = ${this.src} href = ${this.contentWindow.location.href}`); loadIframe(this)"
+        id="iframe"
+        class="hidden h-full w-full"
+      ></iframe>
+      <div id="landing-page" class="h-full w-full p-4 overflow-scroll flex">
+        <div
+          id="landing-grid"
+          class="grid grid-cols-1 md:grid-cols-2 w-5/6 gap-8 m-auto"
+        >
+          <div class="card skeleton h-32"></div>
+          <div class="card skeleton h-32"></div>
+          <div class="card skeleton h-32"></div>
+          <div class="card skeleton h-32"></div>
+          <div class="card skeleton h-32"></div>
+          <div class="card skeleton h-32"></div>
+        </div>
       </div>
     </div>
   </body>
@@ -46,13 +49,24 @@
     document.getElementById("landing-page").classList.add("hidden");
     let iframe = document.getElementById("iframe");
     iframe.classList.remove("hidden");
-    iframe.src = "/" + app;
+    if (app) {
+      iframe.src = "/" + app;
+    }
   };
-  const goHome = () => {
+  const goHome = (setsrc) => {
     document.getElementById("landing-page").classList.remove("hidden");
     let iframe = document.getElementById("iframe");
     iframe.classList.add("hidden");
-    iframe.src = "";
+    if (setsrc) {
+      iframe.src = "";
+    }
+  };
+  const loadIframe = (iframe) => {
+    if (iframe.contentWindow.location.href == "about:blank") {
+      goHome();
+    } else {
+      loadApp();
+    }
   };
 
   const apps = [

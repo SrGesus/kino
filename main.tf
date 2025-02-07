@@ -12,6 +12,9 @@ terraform {
     sonarr = {
       source = "devopsarr/sonarr"
     }
+    lidarr = {
+      source = "devopsarr/lidarr"
+    }
   }
 }
 
