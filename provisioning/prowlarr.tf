@@ -1,28 +1,28 @@
-provider "prowlarr" {
-  url     = "http://${module.deployment.routes.prowlarr.clusterip}/prowlarr"
-  api_key = module.deployment.api_keys.prowlarr
-}
-
 resource "prowlarr_application_radarr" "radarr" {
-  depends_on = [ kubernetes_deployment.nginx ]
   name         = "Radarr"
   sync_level   = "fullSync"
-  base_url     = module.deployment.routes["radarr"].url
-  api_key      = module.deployment.api_keys["radarr"]
-  prowlarr_url =  module.deployment.routes["prowlarr"].url
+  base_url     = var.routes["radarr"].url
+  api_key      = var.api_keys["radarr"]
+  prowlarr_url =  var.routes["prowlarr"].url
 }
 
 resource "prowlarr_application_sonarr" "sonarr" {
-  depends_on = [ kubernetes_deployment.nginx ]
   name         = "Sonarr"
   sync_level   = "fullSync"
-  base_url     = module.deployment.routes["sonarr"].url
-  api_key      = module.deployment.api_keys["sonarr"]
-  prowlarr_url =  module.deployment.routes["prowlarr"].url
+  base_url     = var.routes["sonarr"].url
+  api_key      = var.api_keys["sonarr"]
+  prowlarr_url =  var.routes["prowlarr"].url
+}
+
+resource "prowlarr_application_lidarr" "lidarr" {
+  name         = "Lidarr"
+  sync_level   = "fullSync"
+  base_url     = var.routes["lidarr"].url
+  api_key      = var.api_keys["lidarr"]
+  prowlarr_url =  var.routes["prowlarr"].url
 }
 
 resource "prowlarr_host" "prowlarr" {
-  depends_on = [ kubernetes_deployment.nginx ]
   launch_browser  = true
   bind_address    = "*"
   port            = 80
@@ -62,7 +62,7 @@ resource "prowlarr_host" "prowlarr" {
 # # Restart Prowlarr when settings change because the provider doesn't seem to do it automatically
 # resource "null_resource" "prowlarr_restart" {
 #   provisioner "local-exec" {
-#     command = "curl -X POST http://localhost/prowlarr/api/v1/system/restart?apikey=${module.deployment.api_keys["prowlarr"]}"
+#     command = "curl -X POST http://localhost/prowlarr/api/v1/system/restart?apikey=${var.api_keys["prowlarr"]}"
 #   }
 #   depends_on = [prowlarr_host.prowlarr]
 # }

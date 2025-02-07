@@ -1,7 +1,9 @@
 data
 *.json
 background.jpg
+favicon*
 
 # Terraform files
 .terraform*
 terraform*
+.auto.tfvars

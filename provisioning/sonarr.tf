@@ -1,18 +1,11 @@
-provider "sonarr" {
-  url     = "http://${module.deployment.routes.sonarr.clusterip}/sonarr"
-  api_key = module.deployment.api_keys.sonarr
-}
-
 resource "sonarr_root_folder" "movies" {
-  depends_on = [kubernetes_deployment.nginx]
   path       = "/library"
 }
 
 resource "sonarr_download_client_qbittorrent" "client" {
-  depends_on  = [kubernetes_deployment.nginx]
   enable      = true
   name        = "qBittorrent"
-  host        = replace(module.deployment.routes.qbittorrent.url, "http://", "")
+  host        = replace(var.routes.qbittorrent.url, "http://", "")
   port        = 80
   username    = "admin"
   password    = var.qbittorrent_password
@@ -21,7 +14,6 @@ resource "sonarr_download_client_qbittorrent" "client" {
 }
 
 resource "sonarr_host" "sonarr" {
-  depends_on      = [kubernetes_deployment.nginx]
   launch_browser  = true
   bind_address    = "*"
   port            = 80

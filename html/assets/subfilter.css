@@ -1,0 +1,14 @@
+/* Subfilter applied to microservice responses */
+html {
+  color-scheme: dark;
+  background-color: #20202000;
+  --pageBackground: #20202000 !important;
+}
+
+.preload {
+  background-color: #20202000;
+}
+
+.backgroundContainer {
+  background-color: #20202000 !important;
+}

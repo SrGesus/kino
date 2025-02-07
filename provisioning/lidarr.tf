@@ -1,8 +1,3 @@
-provider "lidarr" {
-  url     = "http://${module.deployment.routes.lidarr.clusterip}/lidarr"
-  api_key = module.deployment.api_keys.lidarr
-}
-
 resource "lidarr_root_folder" "music" {
   name                    = "Music"
   quality_profile_id      = 1
@@ -14,10 +9,9 @@ resource "lidarr_root_folder" "music" {
 }
 
 resource "lidarr_download_client_qbittorrent" "client" {
-  depends_on     = [kubernetes_deployment.nginx]
   enable         = true
   name           = "qBittorrent"
-  host           = replace(module.deployment.routes.qbittorrent.url, "http://", "")
+  host           = replace(var.routes.qbittorrent.url, "http://", "")
   port           = 80
   username       = "admin"
   password       = var.qbittorrent_password
@@ -26,7 +20,6 @@ resource "lidarr_download_client_qbittorrent" "client" {
 }
 
 resource "lidarr_host" "lidarr" {
-  depends_on      = [kubernetes_deployment.nginx]
   launch_browser  = true
   bind_address    = "*"
   port            = 80

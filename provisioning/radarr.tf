@@ -1,18 +1,11 @@
-provider "radarr" {
-  url     = "http://${module.deployment.routes.radarr.clusterip}/radarr"
-  api_key = module.deployment.api_keys.radarr
-}
-
 resource "radarr_root_folder" "tv" {
-  depends_on = [kubernetes_deployment.nginx]
   path       = "/library"
 }
 
 resource "radarr_download_client_qbittorrent" "client" {
-  depends_on     = [kubernetes_deployment.nginx]
   enable         = true
   name           = "qBittorrent"
-  host           = replace(module.deployment.routes.qbittorrent.url, "http://", "")
+  host           = replace(var.routes.qbittorrent.url, "http://", "")
   port           = 80
   username       = "admin"
   password       = var.qbittorrent_password
@@ -21,7 +14,6 @@ resource "radarr_download_client_qbittorrent" "client" {
 }
 
 resource "radarr_host" "radarr" {
-  depends_on      = [kubernetes_deployment.nginx]
   launch_browser  = true
   bind_address    = "*"
   port            = 80

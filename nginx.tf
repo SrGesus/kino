@@ -9,11 +9,6 @@ resource "local_file" "applications_nginx_confs" {
   content  = <<-EOT
     %{if each.value.stripprefix == true}location /${each.key} {
       proxy_pass http://${each.key}-web.${module.deployment.namespace};
-      sub_filter
-      '</head>'
-      '<link rel="stylesheet" type="text/css" href="/assets/servarr.css"></head>';
-      sub_filter_once on;
-      proxy_set_header Accept-Encoding "";
     %{else}location /${each.key}/ {
       proxy_pass http://${each.key}-web.${module.deployment.namespace}/;
       proxy_request_buffering off;
@@ -22,6 +17,11 @@ resource "local_file" "applications_nginx_confs" {
       proxy_read_timeout 36000s;
       proxy_send_timeout 36000s;
     %{endif}  proxy_set_header Host $host;
+      sub_filter
+      '</head>'
+      '<link rel="stylesheet" type="text/css" href="/assets/subfilter.css"></head>';
+      sub_filter_once on;
+      proxy_set_header Accept-Encoding "";
       proxy_set_header X-Real-IP $remote_addr;
       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_set_header X-Forwarded-Host $host;
