@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  TF_VAR_kubeconfig: /etc/rancher/k3s/k3s.yaml
+  TF_VAR_kubeconfig: ~/.kube/config.yaml
   TF_VAR_downloads: ~/Downloads
   TF_VAR_qbittorrent_password: ${{ secrets.Q_PASSWORD }}
   TF_VAR_username: ${{ secrets.USERNAME }}
@@ -19,7 +19,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
       - name: Apply
         run: |
           terraform init
