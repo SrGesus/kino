@@ -4,12 +4,12 @@ locals {
   media_routes = "${abspath(path.module)}/nginx"
 }
 
-resource "local_file" "media_routes" {
+data "local_file" "media_routes" {
   filename = "${abspath(path.module)}/terraform-media-stack/routes.json"
 }
 
 resource "local_file" "applications_nginx_media_routes" {
-  for_each = jsondecode(local_file.media_routes)
+  for_each = jsondecode(data.local_file.media_routes.content)
   filename = "${local.nginx_config}/routes/${each.key}.conf"
   content  = <<-EOT
     %{if each.value.stripprefix == true}location /${each.key} {
@@ -42,7 +42,7 @@ resource "local_file" "html_website_list" {
   filename = "html/assets/applist.json"
   content = jsonencode(
     [
-      for key, value in jsondecode(local_file.media_routes) : key
+      for key, value in jsondecode(data.local_file.media_routes.content) : key
     ]
   )
 }
