@@ -1,0 +1,3 @@
+[submodule "terraform-media-stack"]
+	path = terraform-media-stack
+	url = https://github.com/SrGesus/terraform-media-stack
