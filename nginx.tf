@@ -8,9 +8,9 @@ resource "local_file" "applications_nginx_confs" {
   filename = "${local.nginx_config}/routes/${each.key}.conf"
   content  = <<-EOT
     %{if each.value.stripprefix == true}location /${each.key} {
-      proxy_pass http://${each.key}-web.${module.deployment.namespace};
+      proxy_pass http://${each.key}-web.${var.namespace};
     %{else}location /${each.key}/ {
-      proxy_pass http://${each.key}-web.${module.deployment.namespace}/;
+      proxy_pass http://${each.key}-web.${var.namespace}/;
       proxy_request_buffering off;
       client_max_body_size 0;
       chunked_transfer_encoding on;
