@@ -7,3 +7,6 @@ favicon*
 .terraform*
 terraform.tfstate*
 .auto.tfvars
+
+*.swp
+*.code-workspace
