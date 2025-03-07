@@ -2,7 +2,7 @@ locals {
   jellyfin_config = "${abspath(path.module)}/data/jellyfin"
 }
 
-resource "kubernetes_deployment" "jellyfin" {
+resource "kubernetes_pod" "jellyfin" {
   metadata {
     name      = "jellyfin"
     namespace = var.namespace
@@ -12,67 +12,53 @@ resource "kubernetes_deployment" "jellyfin" {
   }
 
   spec {
-    replicas = 1
-    selector {
-      match_labels = {
-        "app" = "jellyfin"
+    container {
+      name  = "jellyfin"
+      image = "ghcr.io/linuxserver/jellyfin:latest"
+      port {
+        name           = "web"
+        container_port = 8096
+      }
+      port {
+        name           = "local-discovery"
+        container_port = 7359
+      }
+      port {
+        name           = "dlna"
+        container_port = 1900
+      }
+      volume_mount {
+        name       = "data"
+        mount_path = "/config"
+      }
+      dynamic "volume_mount" {
+        for_each = { for k, v in var.applications : k => v if k != "prowlarr" }
+        content {
+          name       = volume_mount.key
+          mount_path = "/data/${volume_mount.key}"
+        }
       }
     }
-    template {
-      metadata {
-        labels = {
-          "app" = "jellyfin"
-        }
+    volume {
+      name = "data"
+      host_path {
+        path = local.jellyfin_config
+        type = "DirectoryOrCreate"
       }
-      spec {
-        container {
-          name  = "jellyfin"
-          image = "ghcr.io/linuxserver/jellyfin:latest"
-          port {
-            name           = "web"
-            container_port = 8096
-          }
-          port {
-            name           = "local-discovery"
-            container_port = 7359
-          }
-          port {
-            name           = "dlna"
-            container_port = 1900
-          }
-          volume_mount {
-            name       = "data"
-            mount_path = "/config"
-          }
-          dynamic "volume_mount" {
-            for_each = { for k, v in var.applications: k => v if k != "prowlarr" }
-            content {
-              name       = volume_mount.key
-              mount_path = "/data/${volume_mount.key}"
-            }
-          }
-        }
-        volume {
-          name = "data"
-          host_path {
-            path = local.jellyfin_config
-            type = "DirectoryOrCreate"
-          }
-        }
-        dynamic "volume" {
-          for_each = var.applications
-          content {
-            name = volume.key
-            host_path {
-              path = pathexpand(volume.value.library)
-              type = "DirectoryOrCreate"
-            }
-          }
+    }
+    dynamic "volume" {
+      for_each = var.applications
+      content {
+        name = volume.key
+        host_path {
+          path = pathexpand(volume.value.library)
+          type = "DirectoryOrCreate"
         }
       }
     }
   }
 }
+
 
 # Jellyfin routing
 resource "kubernetes_service" "jellyfin_web" {
@@ -92,7 +78,7 @@ resource "kubernetes_service" "jellyfin_web" {
     }
   }
   depends_on = [
-    kubernetes_deployment.jellyfin
+    kubernetes_pod.jellyfin
   ]
 }
 
