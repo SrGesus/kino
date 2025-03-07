@@ -17,6 +17,7 @@ variable "downloads" {
 
 variable "qbittorrent_password" {
   type = string
+  sensitive = true
 }
 
 variable "applications" {

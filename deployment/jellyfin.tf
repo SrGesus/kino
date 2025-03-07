@@ -12,6 +12,7 @@ resource "kubernetes_pod" "jellyfin" {
   }
 
   spec {
+    hostname = "jellyfin"
     container {
       name  = "jellyfin"
       image = "ghcr.io/linuxserver/jellyfin:latest"
