@@ -1,4 +1,4 @@
-
+#!/bin/bash -x
 # Apply Media Stack Plan 
 cd terraform-media-stack
 terraform init
