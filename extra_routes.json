@@ -1,0 +1,7 @@
+{
+    "bluemap": {
+        "route": "bluemap",
+        "stripprefix": true,
+        "url": "http://mc-bluemap"
+    }
+}
